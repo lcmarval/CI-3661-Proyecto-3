@@ -1,8 +1,9 @@
 # Clase que implementa las juagadas que se puedes realizar.
 #   Esta es una clase general de la que los casos heredan.
 class Jugada
+    
     def to_s
-        print self.class
+        # print self.class
     end
 
     def puntos(j)

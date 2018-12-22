@@ -16,9 +16,11 @@ class Estrategia
 end
 
 class Manual < Estrategia
+    attr_accessor :movimiento
+    attr_accessor :jugada
 
     def initialize
-        @movimiento = nil
+        @jugada = nil
     end
 
     def prox
@@ -32,34 +34,32 @@ class Manual < Estrategia
                     5- Spock\n")
             opcion = gets.to_i
         end
-        jugada = nil
+        @jugada = nil
         case opcion
             when 1
-                jugada = Piedra.new
+                @jugada = Piedra.new
             when 2
-                jugada = Papel.new
+                @jugada = Papel.new
             when 3
-                jugada = Tijeras.new
+                @jugada = Tijeras.new
             when 4
-                jugada = Lagarto.new
+                @jugada = Lagarto.new
             when 5
-                jugada = Spock.new
+                @jugada = Spock.new
             else 
-                jugada = Jugada.new
-        end 
-
-        if(jugada != nil)
-            @movimiento = jugada
-        end       
+                @jugada = Jugada.new
+        end     
     end
 
 end
 
 class Uniforme < Estrategia
-
+    attr_accessor :movimientos
+    attr_accessor :jugada
     #Se inicia la estrategia Uniforme, es necesario que sea un arreglo de Symbols
     def initialize(movimientos)
 
+        @jugada = nil
         #Validamos que sea un arreglo, en caso contrario retornamos un error
         if (movimientos.class == Array) 
 
@@ -79,20 +79,19 @@ class Uniforme < Estrategia
     def prox
         #Se selecciona una opcion de jugada random, con probabilidad uniforme para cada opcion
         _random = Random.new.rand(@movimientos.length) #Generamos el numero aleatorio entre 0 y el tamaño del array
-        _opcion = @movimientos[_random].to_s #Asignamos la opcion de juego
-        
-        jugada = nil
+        _opcion = @movimientos[_random] #Asignamos la opcion de juego
+
         case _opcion
-            when 'Piedra'
-                jugada = Piedra.new
-            when 'Papel'
-                jugada = Papel.new
-            when 'Tijeras'
-                jugada = Tijeras.new
-            when 'Lagarto'
-                jugada = Lagarto.new
-            when 'Spock'
-                jugada = Spock.new
+            when :Piedra
+                @jugada = Piedra.new
+            when :Papel
+                @jugada = Papel.new
+            when :Tijeras
+                @jugada = Tijeras.new
+            when :Lagarto
+                @jugada = Lagarto.new
+            when :Spock
+                @jugada = Spock.new
             else 
                 raise ArgumentError.new('Jugada invalida.')
         end
@@ -101,30 +100,34 @@ end
 
 class Sesgada < Estrategia
 
+    attr_accessor :movimientos
+    attr_accessor :aux_movimientos
+    attr_accessor :jugada
     #Se inicia la estrategia Sesgada, es necesario que sea un map
     def initialize(movimientos)
+
+        @jugada = nil
 
         #Validamos que sea un Hash, en caso contrario retornamos un error
         if (movimientos.class == Hash)
 
-            aux_movimientos = movimientos.keys & movimientos.keys #aca tenemos las jugadas sin repetir, este paso puede obviarse
+            @movimientos = movimientos.keys & movimientos.keys #aca tenemos las jugadas sin repetir, este paso puede obviarse
             
-            @movimientos = [] #Iniciamos los movimientos sin nada
-
+            @aux_movimientos = [] #Iniciamos los movimientos sin nada
             #Validamos que que exista al menos una opciona en los arreglos
-            if(aux_movimientos.length < 1)
+            if(@movimientos.length < 1)
                 raise ArgumentError.new('Debe haber al menos una Estrategia con este modo.')
-            elsif(movimientos.values.length < 1)
+            elsif(movimientos.keys.size < 1)
                 raise ArgumentError.new('Debe haber al menos una probabilidad en este metodo.')
             else
 
                 #Creamos un arreglo que combine las probabilidades con los movimientos
-                aux_movimientos2 = [movimientos.keys,movimientos.values].transpose
+                aux = [movimientos.keys,movimientos.values].transpose
 
                 #Por cada posicion de ese arreglo, anexamos a movimientos la jugada la cantidad de veces que diga la probabilidad
-                aux_movimientos2.each do |movimiento|
+                aux.each do |movimiento|
                     movimiento[1].times do |num|
-                        @movimientos.push(movimiento[0])
+                        @aux_movimientos.push(movimiento[0])
                     end
                 end
             end
@@ -135,30 +138,56 @@ class Sesgada < Estrategia
 
     def prox
         
-        _random = Random.new.rand(@movimientos.length) #Generamos el numero aleatorio entre 0 y el tamaño del array
-        _opcion = @movimientos[_random].to_s #Asignamos la opcion de juego
+        _random = Random.new.rand(@aux_movimientos.length) #Generamos el numero aleatorio entre 0 y el tamaño del array
+        _opcion = @aux_movimientos[_random] #Asignamos la opcion de juego
         
-        jugada = nil
         case _opcion
-            when 'Piedra'
-                jugada = Piedra.new
-            when 'Papel'
-                jugada = Papel.new
-            when 'Tijeras'
-                jugada = Tijeras.new
-            when 'Lagarto'
-                jugada = Lagarto.new
-            when 'Spock'
-                jugada = Spock.new
+            when :Piedra
+                @jugada = Piedra.new
+            when :Papel
+                @jugada = Papel.new
+            when :Tijeras
+                @jugada = Tijeras.new
+            when :Lagarto
+                @jugada = Lagarto.new
+            when :Spock
+                @jugada = Spock.new
             else 
                 raise ArgumentError.new('Jugada invalida.')
         end
-
-        if(jugada != nil)
-            jugada.to_s
-        end
     end
 end
+
+class Copiar < Estrategia
+    attr_accessor :movimiento
+    def initialize(movimiento)
+        @movimiento = movimiento
+        @jugada = nil
+    end
+
+    def prox
+
+        case @movimiento
+            when Piedra
+                @jugada = Piedra.new
+            when Papel
+                @jugada = Papel.new
+            when Tijeras
+                @jugada = Tijeras.new
+            when Lagarto
+                @jugada = Lagarto.new
+            when Spock
+                @jugada = Spock.new
+            else 
+                @jugada = Jugada.new
+        end 
+
+        if(@jugada != nil)
+            @movimiento = @jugada
+        end       
+    end
+end
+
 
 # _uniforme = Uniforme.new([ :Piedra, :Papel, :Tijeras, :Lagarto, :Spock,:Lagarto,:Spock ])
 # _uniforme.prox
