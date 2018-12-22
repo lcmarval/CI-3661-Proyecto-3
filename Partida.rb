@@ -37,11 +37,11 @@ class Partida
             jugadaJugador2 = @jugador2.prox
 
             resultado = jugadaJugador1.puntos(jugadaJugador2)
-            
+            print resultado
             if(resultado[0] < resultado[1])
-                print "Gana jugador 1\n"
-            elsif(resultado[0] > resultado[1])
                 print "Gana jugador 2\n"
+            elsif(resultado[0] > resultado[1])
+                print "Gana jugador 1\n"
             else
                 print "Empate\n"
             end
@@ -49,10 +49,10 @@ class Partida
             
         end
 
-        if(puntos[0] < puntos[1])
-            print "El Ganador es el jugador 1\n"
-        elsif(puntos[0] > puntos[1])
+        if(@puntos[0] < @puntos[1])
             print "El Ganador es el jugador 2\n"
+        elsif(@puntos[0] > @puntos[1])
+            print "El Ganador es el jugador 1\n"
         else
             print "Esto es un empate!\n"
         end
