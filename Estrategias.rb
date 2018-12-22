@@ -159,32 +159,14 @@ class Sesgada < Estrategia
 end
 
 class Copiar < Estrategia
-    attr_accessor :movimiento
-    def initialize(movimiento)
-        @movimiento = movimiento
-        @jugada = nil
+    attr_accessor :jugada
+
+    def initialize(estrategia)
+        @jugada = estrategia
     end
 
     def prox
-
-        case @movimiento
-            when Piedra
-                @jugada = Piedra.new
-            when Papel
-                @jugada = Papel.new
-            when Tijeras
-                @jugada = Tijeras.new
-            when Lagarto
-                @jugada = Lagarto.new
-            when Spock
-                @jugada = Spock.new
-            else 
-                @jugada = Jugada.new
-        end 
-
-        if(@jugada != nil)
-            @movimiento = @jugada
-        end       
+        return @jugada     
     end
 end
 

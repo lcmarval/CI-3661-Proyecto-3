@@ -31,9 +31,8 @@ class Partida
     end
 
     #Metodo que informa quien gano cada ronda, si se le pasa flag = 1, dice quien gano todo el juego
-    def ganador(puntos, flag = 0)
-
-        if(flag !=0 )
+    def ganador(puntos)
+        print puntos
             if(puntos[0] < puntos[1])
                 print "El Ganador es el jugador 2\n"
             elsif(puntos[0] > puntos[1])
@@ -41,15 +40,7 @@ class Partida
             else
                 print "Esto es un empate!\n"
             end
-        else
-            if(puntos[0] < puntos[1])
-                print "El Ganador del Juego es el jugador 2, Felicidades!! :D\n"
-            elsif(puntos[0] > puntos[1])
-                print "El Ganador del Juego es el jugador 1, Felicidades!! :D\n"
-            else
-                print "Rayos, esto es un empate!!\n"
-            end
-        end
+
     end
 
     def rondas(num_rondas)
@@ -58,15 +49,12 @@ class Partida
 
             jugadaJugador1 = @jugador1.prox
             jugadaJugador2 = @jugador2.prox
-
             resultado = jugadaJugador1.puntos(jugadaJugador2)
-
             ganador(resultado)
             print "Puntaje Actual: #{sumarPuntos(resultado)}\n" 
             
         end
-
-        ganador(@puntos, 1)
+        ganador(@puntos)
     end
 
     def alcanzar(num_puntos)
@@ -81,7 +69,7 @@ class Partida
             print "Puntaje Actual: #{sumarPuntos(resultado)}\n" 
         end
 
-        ganador(@puntos, 1)
+        ganador(@puntos)
     end
 
 end
@@ -97,7 +85,6 @@ def initial
         --->")
 
     opcion = gets.to_i
-
 end
 
 def jugarPorRondas(num_rondas,modoPlay)
@@ -276,20 +263,45 @@ def seleccionSesgada
 
     print("Tu estrategia es: #{estrategias}\n") 
     return estrategias
+end
 
+def seleccionCopiar
+    #Este metodo retornara un objeto siempre pues debe recordar siempre ese obejta, 
+    #las instancias de copiar se crean con una instancia de estrategia como parametro
+
+    print ( "\tIndique la jugada (recuerde que será eterna xD)
+            1- Piedra
+            2- Papel
+            3- Tijeras
+            4- Lagarto
+            5- Spock
+            --->")
+
+        opcion = gets.to_i
+        case 
+            when 1
+                Piedra.new
+            when 2
+                Papel.new
+            when 3
+                Tijeras.new
+            when 4
+                Lagarto.new
+            when 5
+                Spock.new
+        end 
 end
 
 def selectEstrategia(opcion)
     case opcion
         when 1
-            #Manual
             return Manual.new
         when 2
-            estrategias = seleccionUniforme
-            return Uniforme.new(estrategias)
+            return Uniforme.new(seleccionUniforme)
         when 3
-            estrategias = seleccionSesgada
-            return Sesgada.new(estrategias)
+            return Sesgada.new(seleccionSesgada)
+        when 4
+            return Copiar.new(seleccionCopiar)
         else 
             print("\n\tDebe seleccionar una opción entre 1 y 5\n\n")
     end 
@@ -299,7 +311,6 @@ print("\n\tPiedra, Papel, Tijeras... Lagarto y Spock!!!\n\n")
 
 modoPlay = initial  #Esta variable almacena el modo de juego
 opcion =-1
-
 while opcion<1 or opcion>3 do
 
     print ( "
