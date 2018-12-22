@@ -226,8 +226,53 @@ def seleccionUniforme
         end
     end
 
-    print estrategias
+    print("Tu estrategia es: #{estrategias}\n") 
     return estrategias
+end
+
+def seleccionSesgada
+
+    estrategias = {}
+    opcion = -1
+
+    while opcion<6 do
+        print ( "\tIndique los valores de su estrategia 
+            1- Piedra
+            2- Papel
+            3- Tijeras
+            4- Lagarto
+            5- Spock
+            6- Listo, no más
+            --->")
+
+        opcion = gets.to_i
+        case opcion
+            when 1
+                print("\t Indique una probabilidad: ")
+                probabilidad = gets.to_i 
+                estrategias[:Piedra] = probabilidad
+            when 2 
+                print("\t Indique una probabilidad: ")
+                probabilidad = gets.to_i 
+                estrategias[:Papel] = probabilidad
+            when 3 
+                print("\t Indique una probabilidad: ")
+                probabilidad = gets.to_i 
+                estrategias[:Tijeras] = probabilidad
+            when 4
+                print("\t Indique una probabilidad: ")
+                probabilidad = gets.to_i 
+                estrategias[:Lagarto] = probabilidad
+            when 5
+                print("\t Indique una probabilidad: ")
+                probabilidad = gets.to_i 
+                estrategias[:Spock] = probabilidad
+        end
+    end
+
+    print("Tu estrategia es: #{estrategias}\n") 
+    return estrategias
+
 end
 
 def selectEstrategia(opcion)
@@ -239,7 +284,8 @@ def selectEstrategia(opcion)
             estrategias = seleccionUniforme
             return Uniforme.new(estrategias)
         when 3
-            # @jugada = Tijeras.new
+            estrategias = seleccionSesgada
+            return Sesgada.new(estrategias)
         else 
             print("\n\tDebe seleccionar una opción entre 1 y 5\n\n")
     end 
