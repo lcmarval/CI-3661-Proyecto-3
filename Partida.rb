@@ -39,7 +39,7 @@ class Partida
         end
     end
 
-    def jugarPorRondas(num_rondas)
+    def rondas(num_rondas)
 
         num_rondas.times do |ronda|
 
@@ -56,7 +56,7 @@ class Partida
         ganador(@puntos)
     end
 
-    def jugarPorPuntaje(num_puntos)
+    def alcanzar(num_puntos)
 
         while @puntos.detect {|i| i == num_puntos } == nil do
             jugadaJugador1 = @jugador1.prox
@@ -96,7 +96,7 @@ def initial
 
 end
 
-def rondas(num_rondas,modoPlay)
+def jugarPorRondas(num_rondas,modoPlay)
     case modoPlay
         when 1
             #Rondas contra el PC
@@ -126,13 +126,40 @@ def rondas(num_rondas,modoPlay)
             estrategiaJugador2 = selectEstrategia(opcionJugador2)
 
             nuevaPartida = Partida.new( { :Jugador1 => estrategiaJugador1, :Jugador2 => estrategiaJugador2 } )
-            nuevaPartida.jugarPorRondas(num_rondas)
+            nuevaPartida.rondas(num_rondas)
+
+            jugarDeNuevo = 1
+            while jugarDeNuevo==1 do
+
+                print ( "
+                Desea jugar más rondas?
+                    1- Sí
+                    2- No\n
+
+                --->")
+
+                jugarDeNuevo = gets.to_i
+
+                case jugarDeNuevo
+                    when 1
+                        print("\tCuantas rondas adicionales desean jugar?\n")
+                        print("\t--->")
+
+                        num_rondas = gets.to_i
+                        nuevaPartida.rondas(num_rondas)
+                    when 2
+                        #Deberiamos Salir
+                    else 
+                        raise ArgumentError.new('Entrada Invalida')
+                end
+            end
+
         when 3
             #Rondas contra el PC
 
     end
 end
-def alcanzar(num_puntos,modoPlay)
+def jugarPorPuntaje(num_puntos,modoPlay)
     case modoPlay
         when 1
             #Rondas contra el PC
@@ -162,11 +189,45 @@ def alcanzar(num_puntos,modoPlay)
             estrategiaJugador2 = selectEstrategia(opcionJugador2)
 
             nuevaPartida = Partida.new( { :Jugador1 => estrategiaJugador1, :Jugador2 => estrategiaJugador2 } )
-            nuevaPartida.jugarPorPuntaje(num_puntos)
+            nuevaPartida.alcanzar(num_puntos)
         when 3
             #Rondas contra el PC PC
 
     end
+end
+
+def seleccionUniforme
+
+    estrategias = []
+    opcion = -1
+
+    while opcion<6 do
+        print ( "\tIndique los valores de su estrategia 
+            1- Piedra
+            2- Papel
+            3- Tijeras
+            4- Lagarto
+            5- Spock
+            6- Listo, no más
+            --->")
+
+        opcion = gets.to_i
+        case opcion
+            when 1 
+                estrategias.push(:Piedra)
+            when 2 
+                estrategias.push(:Papel)
+            when 3 
+                estrategias.push(:Tijeras)
+            when 4
+                estrategias.push(:Lagarto)
+            when 5
+                estrategias.push(:Spock)
+        end
+    end
+
+    print estrategias
+    return estrategias
 end
 
 def selectEstrategia(opcion)
@@ -175,7 +236,8 @@ def selectEstrategia(opcion)
             #Manual
             return Manual.new
         when 2
-            # @jugada = Papel.new
+            estrategias = seleccionUniforme
+            return Uniforme.new(estrategias)
         when 3
             # @jugada = Tijeras.new
         else 
@@ -208,7 +270,7 @@ while opcion<1 or opcion>3 do
             print("\t--->")
 
             num_rondas = gets.to_i
-            rondas(num_rondas,modoPlay)
+            jugarPorRondas(num_rondas,modoPlay)
         when 2
             #Hasta alcanzar
             print("\n\tPartida hasta alcanzar un puntaje\n\n")
@@ -216,7 +278,7 @@ while opcion<1 or opcion>3 do
             print("\t--->")
 
             num_puntos = gets.to_i
-            alcanzar(num_puntos,modoPlay)
+            jugarPorPuntaje(num_puntos,modoPlay)
         when 3
             # @jugada = Tijeras.new
         else 

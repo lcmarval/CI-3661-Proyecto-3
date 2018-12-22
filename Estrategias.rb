@@ -26,7 +26,7 @@ class Manual < Estrategia
     def prox
         opcion = -1
         while opcion<1 or opcion>5 do
-            print ( "Indique un valor para su jugada 
+            print ( "Indique un valor para su jugada (Manual) 
                     1- Piedra
                     2- Papel
                     3- Tijeras
