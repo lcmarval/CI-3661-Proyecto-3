@@ -29,6 +29,16 @@ class Partida
         @puntos = [@puntos,resultado].transpose.map { |x| x.reduce :+ }
     end
 
+    def ganador(puntos)
+        if(puntos[0] < puntos[1])
+            print "El Ganador es el jugador 2\n"
+        elsif(puntos[0] > puntos[1])
+            print "El Ganador es el jugador 1\n"
+        else
+            print "Esto es un empate!\n"
+        end
+    end
+
     def jugarPorRondas(num_rondas)
 
         num_rondas.times do |ronda|
@@ -37,25 +47,28 @@ class Partida
             jugadaJugador2 = @jugador2.prox
 
             resultado = jugadaJugador1.puntos(jugadaJugador2)
-            print resultado
-            if(resultado[0] < resultado[1])
-                print "Gana jugador 2\n"
-            elsif(resultado[0] > resultado[1])
-                print "Gana jugador 1\n"
-            else
-                print "Empate\n"
-            end
+
+            ganador(resultado)
             print "Puntaje Actual: #{sumarPuntos(resultado)}\n" 
             
         end
 
-        if(@puntos[0] < @puntos[1])
-            print "El Ganador es el jugador 2\n"
-        elsif(@puntos[0] > @puntos[1])
-            print "El Ganador es el jugador 1\n"
-        else
-            print "Esto es un empate!\n"
+        ganador(@puntos)
+    end
+
+    def jugarPorPuntaje(num_puntos)
+
+        while @puntos.detect {|i| i == num_puntos } == nil do
+            jugadaJugador1 = @jugador1.prox
+            jugadaJugador2 = @jugador2.prox
+
+            resultado = jugadaJugador1.puntos(jugadaJugador2)
+
+            ganador(resultado)
+            print "Puntaje Actual: #{sumarPuntos(resultado)}\n" 
         end
+
+        ganador(@puntos)
     end
 
 end
@@ -75,7 +88,8 @@ def initial
     print ( "
         Seleccione un modo de juego
             1- Contra la PC ¬¬
-            2- Contra un amigo >_< \")
+            2- Contra un amigo >_< 
+            3- Pc contra Pc -.-\")
         --->")
 
     opcion = gets.to_i
@@ -113,7 +127,44 @@ def rondas(num_rondas,modoPlay)
 
             nuevaPartida = Partida.new( { :Jugador1 => estrategiaJugador1, :Jugador2 => estrategiaJugador2 } )
             nuevaPartida.jugarPorRondas(num_rondas)
-            # print "#{estrategiaJugador1} vs #{estrategiaJugador2}"
+        when 3
+            #Rondas contra el PC
+
+    end
+end
+def alcanzar(num_puntos,modoPlay)
+    case modoPlay
+        when 1
+            #Rondas contra el PC
+        when 2
+            print ( "
+            Jugador 1 Seleccione una estrategia de juego
+                1- Manual
+                2- Uniforme
+                3- Sesgada
+                4- Copiar\n
+
+            --->")
+
+            opcionJugador1 = gets.to_i
+            estrategiaJugador1 = selectEstrategia(opcionJugador1)
+
+            print ( "
+            Jugador 2 Seleccione una estrategia de juego
+                1- Manual---
+                2- Uniforme
+                3- Sesgada
+                4- Copiar\n
+
+            --->")
+
+            opcionJugador2 = gets.to_i
+            estrategiaJugador2 = selectEstrategia(opcionJugador2)
+
+            nuevaPartida = Partida.new( { :Jugador1 => estrategiaJugador1, :Jugador2 => estrategiaJugador2 } )
+            nuevaPartida.jugarPorPuntaje(num_puntos)
+        when 3
+            #Rondas contra el PC PC
 
     end
 end
@@ -151,6 +202,7 @@ while opcion<1 or opcion>3 do
     rondas = -1
     case opcion
         when 1
+            #Por rondas
             print("\n\tPartida por Rondas\n\n")
             print("\tCuantas rondas desea jugar?\n")
             print("\t--->")
@@ -158,7 +210,13 @@ while opcion<1 or opcion>3 do
             num_rondas = gets.to_i
             rondas(num_rondas,modoPlay)
         when 2
-            # @jugada = Papel.new
+            #Hasta alcanzar
+            print("\n\tPartida hasta alcanzar un puntaje\n\n")
+            print("\tHasta cuantos puntos quieres jugar?\n")
+            print("\t--->")
+
+            num_puntos = gets.to_i
+            alcanzar(num_puntos,modoPlay)
         when 3
             # @jugada = Tijeras.new
         else 
