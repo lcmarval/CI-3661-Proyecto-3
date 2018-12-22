@@ -1,12 +1,13 @@
 load 'Estrategias.rb'   
 
+#La clase partida determina la realizacion del juego
 class Partida
 
     attr_accessor :puntos
     
     def initialize(datos)
 
-        @puntos = [0,0]
+        @puntos = [0,0] #El arreglo que almacena los puntos de los jugadores
 
         if(datos.keys.size !=2)
             raise ArgumentError.new('Deben haber exactamente dos jugadores')
@@ -22,20 +23,32 @@ class Partida
         @jugador1 = @estrategias[0]
         @jugador2 = @estrategias[1]
 
-        # puts "\n #{@jugador1.prox} vs #{@jugador2.prox}"
     end
 
+    #Metodo que suma los puntos de los jugadores luego de cada ronda de juego
     def sumarPuntos(resultado)
         @puntos = [@puntos,resultado].transpose.map { |x| x.reduce :+ }
     end
 
-    def ganador(puntos)
-        if(puntos[0] < puntos[1])
-            print "El Ganador es el jugador 2\n"
-        elsif(puntos[0] > puntos[1])
-            print "El Ganador es el jugador 1\n"
+    #Metodo que informa quien gano cada ronda, si se le pasa flag = 1, dice quien gano todo el juego
+    def ganador(puntos, flag = 0)
+
+        if(flag !=0 )
+            if(puntos[0] < puntos[1])
+                print "El Ganador es el jugador 2\n"
+            elsif(puntos[0] > puntos[1])
+                print "El Ganador es el jugador 1\n"
+            else
+                print "Esto es un empate!\n"
+            end
         else
-            print "Esto es un empate!\n"
+            if(puntos[0] < puntos[1])
+                print "El Ganador del Juego es el jugador 2, Felicidades!! :D\n"
+            elsif(puntos[0] > puntos[1])
+                print "El Ganador del Juego es el jugador 1, Felicidades!! :D\n"
+            else
+                print "Rayos, esto es un empate!!\n"
+            end
         end
     end
 
@@ -53,7 +66,7 @@ class Partida
             
         end
 
-        ganador(@puntos)
+        ganador(@puntos, 1)
     end
 
     def alcanzar(num_puntos)
@@ -68,19 +81,10 @@ class Partida
             print "Puntaje Actual: #{sumarPuntos(resultado)}\n" 
         end
 
-        ganador(@puntos)
+        ganador(@puntos, 1)
     end
 
 end
-
-# s1 = Uniforme.new([ :Piedra, :Papel, :Tijeras, :Lagarto, :Spock,:Lagarto,:Spock ])
-# s2 = Sesgada.new(
-# { :Piedra => 2, :Papel => 5, :Tijeras => 4,
-#  :Lagarto => 3, :Spock => 1
-# })
-# s3 = Manual.new
-# m = Partida.new( { :Deepthought => s3, :Multivac => s2 } )
-
 
 #Funcion que determina como se jugara
 def initial
