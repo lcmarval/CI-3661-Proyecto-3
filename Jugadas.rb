@@ -1,16 +1,28 @@
 # Clase que implementa las juagadas que se puedes realizar.
-#   Esta es una clase general de la que los casos heredan.
+#
+# Esta es una clase general de la que los casos heredan.
+#
+# De esta se general las subclases Piedra, Papel, Tijeras, Lagarto, Spock. 
 class Jugada
-    
+    # Metodo que transforma los objetos en Strings
     def to_s
         # print self.class
     end
 
+    # Función que determina el resultado de la jugada entre el invocante y la jugada j, 
+    # correspondiente al contrincante, que es recibido como argumento. 
+    # El resultado de puntos debe ser una tupla que representa la ganancia 
+    # en puntos resultado de la jugada: 
+    #* el primer elemento de la tupla representa la ganancia del invocante,
+    #* mientras que el segundo elemento representa la ganancia del contrincante. 
+    #Así, la tupla resultante debe ser [1,0], [0,1] o [0,0] dependiendo de los movimientos involucrados.
     def puntos(j)
     end
 end
 
+# Subclase de Jugada que da los posibles resultados cuando el invocante juega piedra
 class Piedra < Jugada
+    # Funcion que determina el resultado segun un input j
     def puntos(j)
         case j
             #La piedra le gana a las tijeras y al lagarto
@@ -28,7 +40,9 @@ class Piedra < Jugada
     end
 end
 
+# Subclase de Jugada que da los posibles resultados cuando el invocante juega papel
 class Papel < Jugada
+    # Funcion que determina el resultado segun un input j
     def puntos(j)
         case j
             #Papel le gana a Piedra y a Spock
@@ -45,8 +59,9 @@ class Papel < Jugada
     end
 end
 
+# Subclase de Jugada que da los posibles resultados cuando el invocante juega tijeras
 class Tijeras < Jugada
-    
+    # Funcion que determina el resultado segun un input j
     def puntos(j)
         case j
 
@@ -65,8 +80,9 @@ class Tijeras < Jugada
     end
 end
 
+# Subclase de Jugada que da los posibles resultados cuando el invocante juega lagarto
 class Lagarto < Jugada
-    
+    # Funcion que determina el resultado segun un input j
     def puntos(j)
         case j
 
@@ -85,7 +101,9 @@ class Lagarto < Jugada
     end
 end
 
+# Subclase de Jugada que da los posibles resultados cuando el invocante juega spock
 class Spock < Jugada
+    # Funcion que determina el resultado segun un input j
     def puntos(j)
         case j
 
