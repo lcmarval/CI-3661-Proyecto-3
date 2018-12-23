@@ -35,6 +35,19 @@ Shoes.app(title: "Piedra,Papel,Tijeras,Lagarto,Spock") do
 		@inicio.hide()
 		modoPlay = 1
 		@modos.show()	# todavia no estoy seguro donde se muestran los modos
+		@rondas.click{
+			@modos.hide()
+			@note.replace("Usted ha seleccionado por rondas")
+			num_rondasS = ask("Cuantas rondas desea jugar?")
+			num_rondas = num_rondasS.to_i
+			@note.replace ""
+			jugar = jugarPorRondas(num_rondas,modoPlay) # revisar metodo
+			para jugar.to_s
+			title "Rondas"
+			@cuenta_rondasS = subtitle "0"
+			para "Se jugara hasta ", num_rondasS, " rondas"
+			@estrategias.show()
+		}
 		@reiniciar.click{ 
 			@note.replace ""
 			@modos.hide()
@@ -102,7 +115,12 @@ end
 	@note.replace("Usted ha seleccionado por rondas")
 	num_rondasS = ask("Cuantas rondas desea jugar?")
 	num_rondas = num_rondasS.to_i
-	jugarPorRondas(num_rondas,modoPlay)
+	jugarPorRondas(num_rondas,modoPlay) # revisar metodo
+	Titile "Rondas"
+	@cuenta_rondasS = subtitle "0"
+	@estrategias.show()
+
+
 }
 	
 @reiniciar.click{ 

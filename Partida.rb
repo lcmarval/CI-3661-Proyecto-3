@@ -140,7 +140,7 @@ end
 def jugarPorRondas(num_rondas,modoPlay)
     case modoPlay
         when 1
-            print ( "
+            return ( "
             Jugador 1 Seleccione una estrategia de juego
                 1- Manual
                 2- Uniforme
@@ -150,14 +150,14 @@ def jugarPorRondas(num_rondas,modoPlay)
 
             --->")
 
-            opcionJugador1 = gets.to_i
+            #opcionJugador1 = gets.to_i
             estrategiaJugador1 = selectEstrategia(opcionJugador1)
 
             opcionJugador2 = juegoPc
             estrategiaJugador2 = selectEstrategia(opcionJugador2)
 
         when 2
-            print ( "
+            return ( "
             Jugador 1 Seleccione una estrategia de juego
                 1- Manual
                 2- Uniforme
@@ -170,7 +170,7 @@ def jugarPorRondas(num_rondas,modoPlay)
             opcionJugador1 = gets.to_i
             estrategiaJugador1 = selectEstrategia(opcionJugador1)
 
-            print ( "
+            return ( "
             Jugador 2 Seleccione una estrategia de juego
                 1- Manual
                 2- Uniforme
@@ -189,7 +189,7 @@ def jugarPorRondas(num_rondas,modoPlay)
             jugarDeNuevo = 1
             while jugarDeNuevo==1 do
 
-                print ( "
+                return ( "
                 Desea jugar más rondas?
                     1- Sí
                     2- No\n
@@ -200,8 +200,8 @@ def jugarPorRondas(num_rondas,modoPlay)
 
                 case jugarDeNuevo
                     when 1
-                        print("\tCuantas rondas adicionales desean jugar?\n")
-                        print("\t--->")
+                        return("\tCuantas rondas adicionales desean jugar?\n")
+                        return("\t--->")
 
                         num_rondas = gets.to_i
                         nuevaPartida.rondas(num_rondas)
