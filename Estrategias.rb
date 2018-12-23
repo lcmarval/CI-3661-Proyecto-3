@@ -10,7 +10,6 @@ class Estrategia
     end
 
     def reset
-        print 'Aun no me reseteo'
     end
 
 end
@@ -161,8 +160,8 @@ end
 class Copiar < Estrategia
     attr_accessor :jugada
 
-    def initialize(estrategia)
-        @jugada = estrategia
+    def initialize(jugada)
+        @jugada = jugada
     end
 
     def prox
@@ -170,12 +169,50 @@ class Copiar < Estrategia
     end
 end
 
+class Pensar < Estrategia
+    attr_accessor :jugada
 
-# _uniforme = Uniforme.new([ :Piedra, :Papel, :Tijeras, :Lagarto, :Spock,:Lagarto,:Spock ])
-# _uniforme.prox
+    def initialize
+        @jugada = nil
+    end
 
-# b = Sesgada.new(
-# { :Piedra => 2, :Papel => 5, :Tijeras => 4,
-#  :Lagarto => 3, :Spock => 1
-# })
-# b.prox
+    def prox(jugadasAnterioresDelContrincante)
+
+        suma = 0
+        jugadasAnterioresDelContrincante.each {|i| suma = suma + i}
+
+        if(suma == 0)
+            #Hasta ahora entiendo que debe jugar piedra de primero, puede cambiar
+            @jugada = Piedra.new
+        else
+            _opcion = Random.new.rand(suma) #Generamos el numero aleatorio entre 0 y sum
+            piedras = jugadasAnterioresDelContrincante[0]
+            papeles = jugadasAnterioresDelContrincante[1]
+            tijeras = jugadasAnterioresDelContrincante[2]
+            lagartos = jugadasAnterioresDelContrincante[3]
+            spocks = jugadasAnterioresDelContrincante[4]
+
+            aux1 = piedras + papeles
+            aux2 = aux1 + tijeras
+            aux3 = aux2 + lagartos
+            aux4 = aux3 + spocks
+
+
+            if((0...piedras).include? (_opcion))
+                @jugada = Piedra.new
+            elsif((piedras...aux1).include? (_opcion))
+                @jugada = Papel.new
+            elsif((aux1...aux2).include? (_opcion))
+                @jugada = Tijeras.new
+            elsif((aux2...aux3).include? (_opcion))
+                @jugada = Lagarto.new
+            elsif((aux3...aux4).include? (_opcion))
+                @jugada = Spock.new
+            else
+                print 'hola papi'
+            end
+        end
+
+    end
+
+end

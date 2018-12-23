@@ -22,6 +22,8 @@ class Partida
         @estrategias = datos.values
         @jugador1 = @estrategias[0]
         @jugador2 = @estrategias[1]
+        @recuerdoDeJugadasDelJugador1 = [0,0,0,0,0] 
+        @recuerdoDeJugadasDelJugador2 = [0,0,0,0,0]
 
     end
 
@@ -32,23 +34,38 @@ class Partida
 
     #Metodo que informa quien gano cada ronda, si se le pasa flag = 1, dice quien gano todo el juego
     def ganador(puntos)
-        print puntos
-            if(puntos[0] < puntos[1])
-                print "El Ganador es el jugador 2\n"
-            elsif(puntos[0] > puntos[1])
-                print "El Ganador es el jugador 1\n"
-            else
-                print "Esto es un empate!\n"
-            end
 
+        if(puntos[0] < puntos[1])
+            print "El Ganador es el jugador 2\n"
+        elsif(puntos[0] > puntos[1])
+            print "El Ganador es el jugador 1\n"
+        else
+            print "Esto es un empate!\n"
+        end
     end
 
     def rondas(num_rondas)
 
+
         num_rondas.times do |ronda|
 
-            jugadaJugador1 = @jugador1.prox
-            jugadaJugador2 = @jugador2.prox
+            if(@jugador1.class == Pensar)
+                jugadaJugador1 = @jugador1.prox(@recuerdoDeJugadasDelJugador2)
+            else
+                jugadaJugador1 = @jugador1.prox
+            end
+
+
+            if(@jugador2.class == Pensar)
+                jugadaJugador2 = @jugador2.prox(@recuerdoDeJugadasDelJugador1)
+            else
+                jugadaJugador2 = @jugador2.prox
+            end
+
+            #Asignamos el recuerdo de las jugadas anteriores de cada jugador
+            recuerdoDeJugada(@recuerdoDeJugadasDelJugador1,jugadaJugador1)
+            recuerdoDeJugada(@recuerdoDeJugadasDelJugador2,jugadaJugador2)
+
             resultado = jugadaJugador1.puntos(jugadaJugador2)
             ganador(resultado)
             print "Puntaje Actual: #{sumarPuntos(resultado)}\n" 
@@ -60,16 +77,45 @@ class Partida
     def alcanzar(num_puntos)
 
         while @puntos.detect {|i| i == num_puntos } == nil do
-            jugadaJugador1 = @jugador1.prox
-            jugadaJugador2 = @jugador2.prox
+
+            if(@jugador1.class == Pensar)
+                jugadaJugador1 = @jugador1.prox(@recuerdoDeJugadasDelJugador2)
+            else
+                jugadaJugador1 = @jugador1.prox
+            end
+
+
+            if(@jugador2.class == Pensar)
+                jugadaJugador2 = @jugador2.prox(@recuerdoDeJugadasDelJugador1)
+            else
+                jugadaJugador2 = @jugador2.prox
+            end
+
+            #Asignamos el recuerdo de las jugadas anteriores de cada jugador
+            recuerdoDeJugada(@recuerdoDeJugadasDelJugador1,jugadaJugador1)
+            recuerdoDeJugada(@recuerdoDeJugadasDelJugador2,jugadaJugador2)
 
             resultado = jugadaJugador1.puntos(jugadaJugador2)
-
             ganador(resultado)
             print "Puntaje Actual: #{sumarPuntos(resultado)}\n" 
         end
 
         ganador(@puntos)
+    end
+
+    def recuerdoDeJugada(recuerdo,jugada)
+        case jugada
+            when Piedra
+                recuerdo[0] += 1
+            when Papel 
+                recuerdo[1] += 1
+            when Tijeras 
+                recuerdo[2] += 1
+            when Lagarto 
+                recuerdo[3] += 1
+            when Spock 
+                recuerdo[4] += 1
+        end
     end
 
 end
@@ -97,7 +143,8 @@ def jugarPorRondas(num_rondas,modoPlay)
                 1- Manual
                 2- Uniforme
                 3- Sesgada
-                4- Copiar\n
+                4- Copiar
+                5- Pensar\n
 
             --->")
 
@@ -109,13 +156,13 @@ def jugarPorRondas(num_rondas,modoPlay)
                 1- Manual
                 2- Uniforme
                 3- Sesgada
-                4- Copiar\n
+                4- Copiar
+                5- Pensar\n
 
             --->")
 
             opcionJugador2 = gets.to_i
             estrategiaJugador2 = selectEstrategia(opcionJugador2)
-
             nuevaPartida = Partida.new( { :Jugador1 => estrategiaJugador1, :Jugador2 => estrategiaJugador2 } )
             nuevaPartida.rondas(num_rondas)
 
@@ -160,7 +207,8 @@ def jugarPorPuntaje(num_puntos,modoPlay)
                 1- Manual
                 2- Uniforme
                 3- Sesgada
-                4- Copiar\n
+                4- Copiar
+                5- Pensar\n
 
             --->")
 
@@ -169,10 +217,11 @@ def jugarPorPuntaje(num_puntos,modoPlay)
 
             print ( "
             Jugador 2 Seleccione una estrategia de juego
-                1- Manual---
+                1- Manual
                 2- Uniforme
                 3- Sesgada
-                4- Copiar\n
+                4- Copiar
+                5- Pensar\n
 
             --->")
 
@@ -278,7 +327,7 @@ def seleccionCopiar
             --->")
 
         opcion = gets.to_i
-        case 
+        case opcion
             when 1
                 Piedra.new
             when 2
@@ -302,6 +351,8 @@ def selectEstrategia(opcion)
             return Sesgada.new(seleccionSesgada)
         when 4
             return Copiar.new(seleccionCopiar)
+        when 5
+            return Pensar.new
         else 
             print("\n\tDebe seleccionar una opción entre 1 y 5\n\n")
     end 
