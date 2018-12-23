@@ -1,27 +1,39 @@
 load 'Jugadas.rb'   
 
+# Clase que general que permite generar la siguiente jugada del jugador, 
+# quizás aprovechando las jugadas anteriores propias, del rival, o ambas, 
+# como base de referencia.
+#
+# Tiene como subclases Manual, Uniforme, Sesgada, Copiar, Pensar
 class Estrategia
-
+    # Metodo que varia según la subclase, genera la próxima Jugada usando como información adicional, 
+    # si le conviene, la Jugada j suministrada como argumento. 
+    #
+    # Este método retorna un objeto en alguna de las clases Piedra, Papel, Tijera, Lagarto ó Spock.
     def prox()
     end
 
+    # Metodo que devuelve la clase como un String.
     def to_s
         print self.class
     end
 
+    # Metodo que retorna el objeto a valores iniciales.
     def reset
     end
 
 end
 
+# Subclase de Estrategia, que espera a que el usuario indique la siguiente jugada a jugar.
 class Manual < Estrategia
     attr_accessor :movimiento
     attr_accessor :jugada
-
+    # En principio la jugada es nil
     def initialize
         @jugada = nil
     end
 
+     # Se indican las posibles opciones y se espera por la entrada del jugador
     def prox
         opcion = -1
         while opcion<1 or opcion>5 do
@@ -52,6 +64,8 @@ class Manual < Estrategia
 
 end
 
+# Subclase de Estrategia, construida recibiendo una lista de movimientos posibles 
+# y seleccionando cada movimiento usando una distribución uniforme sobre los movimientos posibles. 
 class Uniforme < Estrategia
     attr_accessor :movimientos
     attr_accessor :jugada

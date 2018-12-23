@@ -390,7 +390,7 @@ end
 ##########################################################
 ##########################################################
 ##########################################################
-
+=begin
 
 print("\n\tPiedra, Papel, Tijeras... Lagarto y Spock!!!\n\n")
 
@@ -430,4 +430,4 @@ while opcion<1 or opcion>3 do
         else 
             print("\n\tDebe seleccionar una opción entre 1 y 3\n\n")
     end 
-end
+=end
