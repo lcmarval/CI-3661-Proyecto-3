@@ -18,7 +18,7 @@ Shoes.app(title: "Piedra,Papel,Tijeras,Lagarto,Spock") do
 	@modos.hide()
 
 	@estrategias = flow{
-			caption "Seleccione una estrategia "
+			flow {caption "Seleccione una estrategia "}
 			@manual = button "Manual"
 			@uniforme = button "Uniforme"
 			@sesgado = button "Sesgado"
@@ -34,7 +34,7 @@ Shoes.app(title: "Piedra,Papel,Tijeras,Lagarto,Spock") do
 		@note.replace "Escogiste jugar contra la PC"
 		@inicio.hide()
 		modoPlay = 1
-		@modos.show()	# todavia no estoy seguro donde se muestran los modos
+		@modos.show()
 		@rondas.click{
 			@modos.hide()
 			@note.replace("Usted ha seleccionado por rondas")
@@ -42,17 +42,30 @@ Shoes.app(title: "Piedra,Papel,Tijeras,Lagarto,Spock") do
 			num_rondas = num_rondasS.to_i
 			@note.replace ""
 			jugar = jugarPorRondas(num_rondas,modoPlay) # revisar metodo
-			para jugar.to_s
-			title "Rondas"
-			@cuenta_rondasS = subtitle "0"
+			#para jugar.to_s
 			para "Se jugara hasta ", num_rondasS, " rondas"
+			flow{title "Ronda  "
+				@cuenta_rondasS = title "0"
+			}
 			@estrategias.show()
+
+			@manual.click{
+				opcion_estrategia = 1
+				@estrategias.hide()
+				flow{ caption "Estrategia Manual"}
+				estrategiaJugador1 = selectEstrategia(opcion_estrategia)
+				opcionJugador2 = juegoPc
+            	estrategiaJugador2 = selectEstrategia(opcionJugador2)
+            	flow{ caption "opcion_estrategia ", opcion_estrategia.to_s, ", opcionJugador2 ", opcionJugador2.to_s
+            	}
+			}
+
 		}
+
 		@reiniciar.click{ 
 			@note.replace ""
 			@modos.hide()
 			@inicio.show()
-			@f.delete()
 		}	
 	}
 

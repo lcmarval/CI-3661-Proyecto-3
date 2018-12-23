@@ -374,7 +374,7 @@ def selectEstrategia(opcion)
         when 5
             return Pensar.new
         else 
-            print("\n\tDebe seleccionar una opción entre 1 y 5\n\n")
+            return("\n\tDebe seleccionar una opción entre 1 y 5\n\n")
     end 
 end
 
