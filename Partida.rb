@@ -163,6 +163,7 @@ def jugarPorRondas(num_rondas,modoPlay)
 
             opcionJugador2 = gets.to_i
             estrategiaJugador2 = selectEstrategia(opcionJugador2)
+
             nuevaPartida = Partida.new( { :Jugador1 => estrategiaJugador1, :Jugador2 => estrategiaJugador2 } )
             nuevaPartida.rondas(num_rondas)
 
@@ -357,6 +358,20 @@ def selectEstrategia(opcion)
             print("\n\tDebe seleccionar una opción entre 1 y 5\n\n")
     end 
 end
+
+
+##########################################################
+##########################################################
+##########################################################
+##########################################################
+#########                                 ################
+#########         SECCION PRINCIPAL       ################
+#########                                 ################
+##########################################################
+##########################################################
+##########################################################
+##########################################################
+
 
 print("\n\tPiedra, Papel, Tijeras... Lagarto y Spock!!!\n\n")
 

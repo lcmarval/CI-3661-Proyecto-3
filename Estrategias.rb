@@ -182,8 +182,21 @@ class Pensar < Estrategia
         jugadasAnterioresDelContrincante.each {|i| suma = suma + i}
 
         if(suma == 0)
-            #Hasta ahora entiendo que debe jugar piedra de primero, puede cambiar
-            @jugada = Piedra.new
+            
+            _random = Random.new.rand(5) #Generamos el numero aleatorio entre 0 hasta 5
+            
+            case _random
+                when 0
+                    @jugada = Piedra.new
+                when 1
+                    @jugada = Papel.new
+                when 2
+                    @jugada = Tijeras.new
+                when 3
+                    @jugada = Lagarto.new
+                when 4
+                    @jugada = Spock.new
+            end
         else
             _opcion = Random.new.rand(suma) #Generamos el numero aleatorio entre 0 y sum
             piedras = jugadasAnterioresDelContrincante[0]
