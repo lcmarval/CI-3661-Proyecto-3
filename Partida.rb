@@ -133,10 +133,29 @@ def initial
     opcion = gets.to_i
 end
 
+def juegoPc
+    Random.new.rand(5) #Generamos el numero aleatorio entre 0 hasta 5
+end
+
 def jugarPorRondas(num_rondas,modoPlay)
     case modoPlay
         when 1
-            #Rondas contra el PC
+            print ( "
+            Jugador 1 Seleccione una estrategia de juego
+                1- Manual
+                2- Uniforme
+                3- Sesgada
+                4- Copiar
+                5- Pensar\n
+
+            --->")
+
+            opcionJugador1 = gets.to_i
+            estrategiaJugador1 = selectEstrategia(opcionJugador1)
+
+            opcionJugador2 = juegoPc
+            estrategiaJugador2 = selectEstrategia(opcionJugador2)
+
         when 2
             print ( "
             Jugador 1 Seleccione una estrategia de juego
