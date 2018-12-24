@@ -6,6 +6,8 @@ load 'Jugadas.rb'
 #
 # Tiene como subclases Manual, Uniforme, Sesgada, Copiar, Pensar
 class Estrategia
+    attr_accessor :jugada
+
     # Metodo que varia según la subclase, genera la próxima Jugada usando como información adicional, 
     # si le conviene, la Jugada j suministrada como argumento. 
     #
@@ -18,7 +20,7 @@ class Estrategia
         print self.class
     end
 
-    # Metodo que retorna el objeto a valores iniciales.
+    # Metodo que retorna el objeto a valores iniciales, cuando tiene sentido.
     def reset
     end
 
@@ -27,13 +29,11 @@ end
 # Subclase de Estrategia, que espera a que el usuario indique la siguiente jugada a jugar.
 class Manual < Estrategia
     attr_accessor :movimiento
-    attr_accessor :jugada
     # En principio la jugada es nil
     def initialize
         @jugada = nil
     end
-
-     # Se indican las posibles opciones y se espera por la entrada del jugador
+    # Se indican las posibles opciones y se espera por la entrada del jugador
     def prox
         opcion = -1
         while opcion<1 or opcion>5 do
@@ -68,8 +68,8 @@ end
 # y seleccionando cada movimiento usando una distribución uniforme sobre los movimientos posibles. 
 class Uniforme < Estrategia
     attr_accessor :movimientos
-    attr_accessor :jugada
-    #Se inicia la estrategia Uniforme, es necesario que sea un arreglo de Symbols
+
+    #Se inicia la estrategia Uniforme, el es un arreglo de Symbols
     def initialize(movimientos)
 
         @jugada = nil
@@ -88,7 +88,7 @@ class Uniforme < Estrategia
         end
     end
 
-    #Redifinimos el metodo para seleccionar la jugada
+    #Metodo que decide la proxima jugada, esta se calcula de forma uniforme.
     def prox
         #Se selecciona una opcion de jugada random, con probabilidad uniforme para cada opcion
         _random = Random.new.rand(@movimientos.length) #Generamos el numero aleatorio entre 0 y el tamaño del array
@@ -111,12 +111,13 @@ class Uniforme < Estrategia
     end
 end
 
+# Subclase de Estrategia, Sesgada, construida recibiendo un mapa de movimientos posibles y sus probabilidades
+# asociadas, de modo que cada jugada use una distribución sesgada de esa forma. 
 class Sesgada < Estrategia
 
     attr_accessor :movimientos
     attr_accessor :aux_movimientos
-    attr_accessor :jugada
-    #Se inicia la estrategia Sesgada, es necesario que sea un map
+    #Se inicia la estrategia Sesgada, es un mapa.
     def initialize(movimientos)
 
         @jugada = nil
@@ -149,6 +150,7 @@ class Sesgada < Estrategia
         end
     end
 
+    # Se genera el proximo moviento, usando probabilidad
     def prox
         
         _random = Random.new.rand(@aux_movimientos.length) #Generamos el numero aleatorio entre 0 y el tamaño del array
@@ -171,25 +173,32 @@ class Sesgada < Estrategia
     end
 end
 
+# Subclase de Estrategia, la primera jugada es definida al construirse, pero a partir de la segunda ronda
+# siempre jugará lo mismo que jugó el contrincante en la ronda anterior. 
 class Copiar < Estrategia
-    attr_accessor :jugada
-
+    # Metodo que iniciliza la subclase recibe un parametro y lo almacena en el atriburo jugada.
+    #
+    # @param jugada
     def initialize(jugada)
         @jugada = jugada
     end
-
+    # Metodo que devuelve la proxima jugada, que es copiada de la anterior
     def prox
         return @jugada     
     end
 end
 
+# Subclase de Estrategia, la jugada depende de analizar las frecuencias de las jugadas hechas por el oponente hasta ahora. 
+# La estrategia recuerda las jugadas previas del oponente, y luego decide.
 class Pensar < Estrategia
-    attr_accessor :jugada
-
+    # Metodo constructor, este inicializa jugada en nil
     def initialize
         @jugada = nil
     end
 
+    # Metodo que recibe un parametro y retorna el proximo movimiento despues de usar una lógica para pensar.
+    #
+    # @param jugadasAnterioresDelContrincante
     def prox(jugadasAnterioresDelContrincante)
 
         suma = 0
@@ -236,7 +245,7 @@ class Pensar < Estrategia
             elsif((aux3...aux4).include? (_opcion))
                 @jugada = Spock.new
             else
-                print 'hola papi'
+                print 'pensando'
             end
         end
 
