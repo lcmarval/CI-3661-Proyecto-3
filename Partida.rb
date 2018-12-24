@@ -1,10 +1,12 @@
 load 'Estrategias.rb'   
 
-#La clase partida determina la realizacion del juego
+#La clase partida determina la realizacion del juego, se construye recibiendo un mapa con los nombres y estrategias de los jugadores. 
 class Partida
 
     attr_accessor :puntos
-    
+    # Constructor de la clase que recibe un argumento y genera algunas estructuras, para el funcionamiento de la partida.
+    #
+    # @param datos
     def initialize(datos)
 
         @puntos = [0,0] #El arreglo que almacena los puntos de los jugadores
@@ -27,12 +29,18 @@ class Partida
 
     end
 
-    #Metodo que suma los puntos de los jugadores luego de cada ronda de juego
+    # Metodo que suma los puntos de los jugadores luego de cada ronda de juego
+    #
+    # @param resultado
+    #
+    # @return puntos (Actualiza los puntos)
     def sumarPuntos(resultado)
         @puntos = [@puntos,resultado].transpose.map { |x| x.reduce :+ }
     end
 
-    #Metodo que informa quien gano cada ronda, si se le pasa flag = 1, dice quien gano todo el juego
+    # Metodo que informa quien gano cada ronda, si se le pasa flag = 1, dice quien gano todo el juego.
+    #
+    # @param puntos. Compara el arreglo de puntos para determinar el ganador.
     def ganador(puntos)
 
         if(puntos[0] < puntos[1])
@@ -44,8 +52,10 @@ class Partida
         end
     end
 
+    # Metodo que itera un numero de rondas
+    #
+    # @param num_rondas. int que determina la cantidad de iteraciones.
     def rondas(num_rondas)
-
 
         num_rondas.times do |ronda|
 
@@ -67,16 +77,24 @@ class Partida
             recuerdoDeJugada(@recuerdoDeJugadasDelJugador2,jugadaJugador2)
 
             resultado = jugadaJugador1.puntos(jugadaJugador2)
-            ganador(resultado)
+            # ganador(resultado)
+            # sumarPuntos(resultado)
             print "Puntaje Actual: #{sumarPuntos(resultado)}\n" 
             
         end
+        respuesta = { :Jugador1 => @puntos[0] , :Jugador2 => @puntos[1], :RondasJugadas => num_rondas}
+        print "\n#{respuesta}\n\n"
         ganador(@puntos)
     end
 
+    # Metodo que realiza el modo de juego alcanzar, en el cual al llegar a una cantidad de puntos termina.
+    #
+    # @param num_puntos. int que determina la condición de parada.
     def alcanzar(num_puntos)
 
+        num_rondas = 0
         while @puntos.detect {|i| i == num_puntos } == nil do
+            num_rondas += 1
 
             if(@jugador1.class == Pensar)
                 jugadaJugador1 = @jugador1.prox(@recuerdoDeJugadasDelJugador2)
@@ -96,13 +114,21 @@ class Partida
             recuerdoDeJugada(@recuerdoDeJugadasDelJugador2,jugadaJugador2)
 
             resultado = jugadaJugador1.puntos(jugadaJugador2)
-            ganador(resultado)
+            # ganador(resultado)
+            # sumarPuntos(resultado)
             print "Puntaje Actual: #{sumarPuntos(resultado)}\n" 
         end
 
+        respuesta = { :Jugador1 => @puntos[0] , :Jugador2 => @puntos[1], :RondasJugadas => num_rondas}
+        print "\n#{respuesta}\n\n"
         ganador(@puntos)
     end
 
+    # Metodo que actualiza las jugadas recordadas.
+    #
+    # @param recuerdo. Array of Jugada que determina jugadas anteriores.
+    #
+    # @param jugada. Jugada que incrementa las jugadas recordadas.
     def recuerdoDeJugada(recuerdo,jugada)
         case jugada
             when Piedra
@@ -118,9 +144,22 @@ class Partida
         end
     end
 
+    # Metodo que reestablece los valores iniciales de la partida.
+    def reiniciar
+        @puntos = [0,0] #El arreglo que almacena los puntos de los jugadores
+        @recuerdoDeJugadasDelJugador1 = [0,0,0,0,0] 
+        @recuerdoDeJugadasDelJugador2 = [0,0,0,0,0]
+        @jugador1.reset
+        @jugador2.reset
+
+    end
 end
 
-#Funcion que determina como se jugara
+# Función que determina como se jugara, se pregunta al usuario via consola como desea jugar.
+#
+#  1- Contra la PC, 2- Contra un amigo, 3- Pc contra Pc
+#
+# @return opcion. int que registra la opción que introdujo el usuario.
 def initial
     opcion =-1
     print ( "
@@ -133,31 +172,15 @@ def initial
     opcion = gets.to_i
 end
 
-def juegoPc
-    Random.new.rand(5) #Generamos el numero aleatorio entre 0 hasta 5
-end
-
+# Función que implmenta el juego por rondas, usa el metodo rondas para esto.
+#
+# @param num_rondas. int que determina el numero de rondas.
+#
+# @param modoPlay. int que determina de que forma se esta jugando.
 def jugarPorRondas(num_rondas,modoPlay)
     case modoPlay
         when 1
-            return ( "
-            Jugador 1 Seleccione una estrategia de juego
-                1- Manual
-                2- Uniforme
-                3- Sesgada
-                4- Copiar
-                5- Pensar\n
-
-            --->")
-
-            #opcionJugador1 = gets.to_i
-            estrategiaJugador1 = selectEstrategia(opcionJugador1)
-
-            opcionJugador2 = juegoPc
-            estrategiaJugador2 = selectEstrategia(opcionJugador2)
-
-        when 2
-            return ( "
+            print ( "
             Jugador 1 Seleccione una estrategia de juego
                 1- Manual
                 2- Uniforme
@@ -170,7 +193,64 @@ def jugarPorRondas(num_rondas,modoPlay)
             opcionJugador1 = gets.to_i
             estrategiaJugador1 = selectEstrategia(opcionJugador1)
 
-            return ( "
+            estrategiaJugador2 = Pensar.new
+
+            nuevaPartida = Partida.new( { :Jugador1 => estrategiaJugador1, :Jugador2 => estrategiaJugador2 } )
+            nuevaPartida.rondas(num_rondas)
+
+            jugarDeNuevo = 1
+            while jugarDeNuevo==1 do
+
+                print ( "
+                Desea jugar más rondas?
+                    1- Sí
+                    2- No\n
+
+                --->")
+
+                jugarDeNuevo = gets.to_i
+
+                case jugarDeNuevo
+                    when 1
+                        print("\tCuantas rondas adicionales desean jugar?\n")
+                        print("\t--->")
+
+                        num_rondas = gets.to_i
+                        nuevaPartida.rondas(num_rondas)
+                    when 2
+                        print ( "
+                            Desea reiniciar el juego?
+                                1- Sí
+                                2- No\n
+
+                            --->")
+
+                            reinicio = gets.to_i
+
+                            case reinicio
+                                when 1
+                                    nuevaPartida.reiniciar
+                                    nuevaPartida.rondas(num_rondas)
+                            end
+                    else 
+                        raise ArgumentError.new('Entrada Invalida')
+                end
+            end
+        when 2
+            print ( "
+            Jugador 1 Seleccione una estrategia de juego
+                1- Manual
+                2- Uniforme
+                3- Sesgada
+                4- Copiar
+                5- Pensar\n
+
+            --->")
+
+            opcionJugador1 = gets.to_i
+            estrategiaJugador1 = selectEstrategia(opcionJugador1)
+
+            print ( "
             Jugador 2 Seleccione una estrategia de juego
                 1- Manual
                 2- Uniforme
@@ -189,7 +269,7 @@ def jugarPorRondas(num_rondas,modoPlay)
             jugarDeNuevo = 1
             while jugarDeNuevo==1 do
 
-                return ( "
+                print ( "
                 Desea jugar más rondas?
                     1- Sí
                     2- No\n
@@ -200,27 +280,123 @@ def jugarPorRondas(num_rondas,modoPlay)
 
                 case jugarDeNuevo
                     when 1
-                        return("\tCuantas rondas adicionales desean jugar?\n")
-                        return("\t--->")
+                        print("\tCuantas rondas adicionales desean jugar?\n")
+                        print("\t--->")
 
                         num_rondas = gets.to_i
                         nuevaPartida.rondas(num_rondas)
                     when 2
-                        #Deberiamos Salir
+                        print ( "
+                        Desea reiniciar el juego?
+                            1- Sí
+                            2- No\n
+
+                        --->")
+
+                        reinicio = gets.to_i
+
+                        case reinicio
+                            when 1
+                                nuevaPartida.reiniciar
+                                nuevaPartida.rondas(num_rondas)
+                        end
                     else 
                         raise ArgumentError.new('Entrada Invalida')
                 end
             end
 
         when 3
-            #Rondas contra el PC
+
+            estrategiaJugador1 = Pensar.new
+
+            estrategiaJugador2 = Pensar.new
+
+            nuevaPartida = Partida.new( { :Jugador1 => estrategiaJugador1, :Jugador2 => estrategiaJugador2 } )
+            nuevaPartida.rondas(num_rondas)
+
+            jugarDeNuevo = 1
+            while jugarDeNuevo==1 do
+
+                print ( "
+                Desea jugar más rondas?
+                    1- Sí
+                    2- No\n
+
+                --->")
+
+                jugarDeNuevo = gets.to_i
+
+                case jugarDeNuevo
+                    when 1
+                        print("\tCuantas rondas adicionales desean jugar?\n")
+                        print("\t--->")
+
+                        num_rondas = gets.to_i
+                        nuevaPartida.rondas(num_rondas)
+                    when 2
+                        print ( "
+                        Desea reiniciar el juego?
+                            1- Sí
+                            2- No\n
+
+                        --->")
+
+                        reinicio = gets.to_i
+
+                        case reinicio
+                            when 1
+                                nuevaPartida.reiniciar
+                                nuevaPartida.rondas(num_rondas)
+
+                        end
+                    else 
+                        raise ArgumentError.new('Entrada Invalida')
+                end
+            end
 
     end
 end
+
+# Función que implmenta el juego por puntaje, usa el metodo puntajes para esto.
+#
+# @param num_puntos. int que determina el numero de rondas.
+#
+# @param modoPlay. int que determina de que forma se esta jugando.
 def jugarPorPuntaje(num_puntos,modoPlay)
     case modoPlay
         when 1
-            #Rondas contra el PC
+            print ( "
+            Jugador 1 Seleccione una estrategia de juego
+                1- Manual
+                2- Uniforme
+                3- Sesgada
+                4- Copiar
+                5- Pensar\n
+
+            --->")
+
+            opcionJugador1 = gets.to_i
+            estrategiaJugador1 = selectEstrategia(opcionJugador1)
+
+            estrategiaJugador2 = Pensar.new
+
+            nuevaPartida = Partida.new( { :Jugador1 => estrategiaJugador1, :Jugador2 => estrategiaJugador2 } )
+            nuevaPartida.alcanzar(num_puntos)
+            print ( "
+            Desea reiniciar el juego?
+                1- Sí
+                2- No\n
+
+            --->")
+
+            reinicio = gets.to_i
+
+            case reinicio
+                when 1
+                    nuevaPartida.reiniciar
+                    nuevaPartida.alcanzar(num_puntos)
+
+            end
         when 2
             print ( "
             Jugador 1 Seleccione una estrategia de juego
@@ -250,12 +426,50 @@ def jugarPorPuntaje(num_puntos,modoPlay)
 
             nuevaPartida = Partida.new( { :Jugador1 => estrategiaJugador1, :Jugador2 => estrategiaJugador2 } )
             nuevaPartida.alcanzar(num_puntos)
+
+            print ( "
+            Desea reiniciar el juego?
+                1- Sí
+                2- No\n
+
+            --->")
+
+            reinicio = gets.to_i
+
+            case reinicio
+                when 1
+                    nuevaPartida.reiniciar
+                    nuevaPartida.alcanzar(num_puntos)
+
+            end
         when 3
-            #Rondas contra el PC PC
+            estrategiaJugador1 = Pensar.new
+
+            estrategiaJugador2 = Pensar.new
+
+            nuevaPartida = Partida.new( { :Jugador1 => estrategiaJugador1, :Jugador2 => estrategiaJugador2 } )
+            nuevaPartida.alcanzar(num_puntos)
+
+            print ( "
+            Desea reiniciar el juego?
+                1- Sí
+                2- No\n
+
+            --->")
+
+            reinicio = gets.to_i
+
+            case reinicio
+                when 1
+                    nuevaPartida.reiniciar
+                    nuevaPartida.alcanzar(num_puntos)
+
+            end
 
     end
 end
 
+# Función que implementa la forma de jugar con la Estrategia Uniforme
 def seleccionUniforme
 
     estrategias = []
@@ -290,6 +504,7 @@ def seleccionUniforme
     return estrategias
 end
 
+# Función que implementa la forma de jugar con la Estrategia Sesgada
 def seleccionSesgada
 
     estrategias = {}
@@ -334,9 +549,9 @@ def seleccionSesgada
     return estrategias
 end
 
+# Función que implementa la forma de jugar con la Estrategia Copiar, retornara un objeto siempre 
+# pues debe recordar siempre ese obejeto, las instancias de copiar se crean con una instancia de estrategia como parametro.
 def seleccionCopiar
-    #Este metodo retornara un objeto siempre pues debe recordar siempre ese obejta, 
-    #las instancias de copiar se crean con una instancia de estrategia como parametro
 
     print ( "\tIndique la jugada (recuerde que será eterna xD)
             1- Piedra
@@ -361,6 +576,9 @@ def seleccionCopiar
         end 
 end
 
+# Metodo que determina que tipo de estrategia se debe crear.
+#
+# @param opcion. int que determina que Estrategia se creara.
 def selectEstrategia(opcion)
     case opcion
         when 1
@@ -374,7 +592,7 @@ def selectEstrategia(opcion)
         when 5
             return Pensar.new
         else 
-            return("\n\tDebe seleccionar una opción entre 1 y 5\n\n")
+            print("\n\tDebe seleccionar una opción entre 1 y 5\n\n")
     end 
 end
 
@@ -390,7 +608,7 @@ end
 ##########################################################
 ##########################################################
 ##########################################################
-=begin
+
 
 print("\n\tPiedra, Papel, Tijeras... Lagarto y Spock!!!\n\n")
 
@@ -430,4 +648,4 @@ while opcion<1 or opcion>3 do
         else 
             print("\n\tDebe seleccionar una opción entre 1 y 3\n\n")
     end 
-=end
+end
