@@ -79,7 +79,9 @@ class Partida
 
     def alcanzar(num_puntos)
 
+        num_rondas = 0
         while @puntos.detect {|i| i == num_puntos } == nil do
+            num_rondas += 1
 
             if(@jugador1.class == Pensar)
                 jugadaJugador1 = @jugador1.prox(@recuerdoDeJugadasDelJugador2)

@@ -1,5 +1,6 @@
 load 'Jugadas.rb'   
 
+
 class Estrategia
 
     def prox()
